@@ -9,9 +9,6 @@
             "type": "Microsoft.Network/virtualNetworks",
             "name": "production",
             "location": "[resourceGroup().location]",
-            "tags": {
-                "displayName": "production"
-            },
             "properties": {
                 "addressSpace": {
                     "addressPrefixes": [
