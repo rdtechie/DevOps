@@ -6,6 +6,7 @@
     "resources": [
         {
             "name": "network",
+            "resourceGroup": "lab08",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2017-05-10",
             "properties": {
@@ -17,6 +18,7 @@
                 "parameters": {}
             },
              "name": "storage",
+            "resourceGroup": "lab08",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2017-05-10",
             "properties": {
