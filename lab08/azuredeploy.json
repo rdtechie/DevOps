@@ -13,7 +13,7 @@
             },
             "properties": {
                 "mode": "Incremental",
-                "template": {
+                "templateLink": {
                     "uri": "https://raw.githubusercontent.com/rdtechie/DevOps/master/lab08/network.json",
                     "contentVersion": "1.0.0.0"
                 },
