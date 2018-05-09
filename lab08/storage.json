@@ -6,7 +6,7 @@
     "resources": [
         {
             "type": "Microsoft.Storage/storageAccounts",
-            "name": "production",
+            "name": "rdilab08prod",
             "apiVersion": "2015-06-15",
             "location": "[resourceGroup().location]",
             "properties": {
