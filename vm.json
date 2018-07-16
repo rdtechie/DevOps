@@ -1,0 +1,71 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location_id": {
+            "type": "string",
+            "defaultValue": "WeEu",
+            "allowedValues": [
+                "WeEu",
+                "WeNo"
+            ],
+            "metadata": {
+                "description": "AHIT of the Azure Location"
+            }
+        },
+        "subscription_id": {
+            "type": "string",
+            "defaultValue": "S03",
+            "allowedValues": [
+                "S02",
+                "S03",
+                "PLY"
+            ],
+            "metadata": {
+                "description": "AHIT ID of the Azure Subscription"
+            }
+        },
+        "environment_id": {
+            "type": "string",
+            "defaultValue": "Dev",
+            "allowedValues": [
+                "Dev",
+                "Tst",
+                "Acc",
+                "Prd"
+            ],
+            "metadata": {
+                "description": "AHIT ID of the Environment"
+            }
+        },
+        "description_id": {
+            "type": "string",
+            "defaultValue": "TEMP",
+            "metadata": {
+                "description": "AHIT Subscription of the Application"
+            }
+        }
+    },
+    "variables": {},
+    "resources": [
+
+    ],
+    "outputs": {
+        "locationID": {
+           "type": "string",
+           "value": "[concat(parameters('location_id'),'\t<= the location where the Azure Resources will be deployed')]"
+        },
+        "subscriptionID": {
+            "type": "string",
+            "value": "[concat(parameters('subscription_id'),'\t<= the subscription where the Azure Resources will be deployed')]"
+         },
+         "environmentID": {
+            "type": "string",
+            "value": "[concat(parameters('environment_id'),'\t<= the environment where the Azure Resources will be deployed')]"
+         },
+         "descriptionID": {
+            "type": "string",
+            "value": "[concat(parameters('description_id'),'\t<= the description of Azure Resources that will be deployed')]"
+         }
+    }
+}
