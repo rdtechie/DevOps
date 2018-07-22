@@ -85,7 +85,7 @@
         "copy": [
             {
                 "name": "nics",
-                "count": "[length(parameters('numberOfInstances'))]",
+                "count": "[parameters('numberOfInstances')]",
                 "input": {
                     "name": "[concat(variables('vmNamePattern'),padLeft(copyIndex(1),2,'0'),'-nic-', padLeft(copyIndex(1),2,'0'))]"
                 }
@@ -96,7 +96,7 @@
         {
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2018-02-01",
-            "name": "[variables('nics')[copyIndex()].name]",
+            "name": "[concat(variables('vmNamePattern'),padLeft(copyIndex(1),2,'0'),'-nic-', padLeft(copyIndex(1),2,'0'))]",
             "location": "[resourceGroup().location]",
             "copy": {
                 "name": "nicsCopy",
