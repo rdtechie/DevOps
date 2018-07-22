@@ -1,0 +1,111 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location_id": {
+            "type": "string",
+            "defaultValue": "WeEu",
+            "allowedValues": [
+                "WeEu",
+                "NoEu"
+            ],
+            "metadata": {
+                "description": "ID of the Azure Location"
+            }
+        },
+        "subscription_id": {
+            "type": "string",
+            "defaultValue": "S03",
+            "allowedValues": [
+                "S01",
+                "S02",
+                "S03",
+                "PLY"
+            ],
+            "metadata": {
+                "description": "ID of the Azure Subscription"
+            }
+        },
+        "environment_id": {
+            "type": "string",
+            "defaultValue": "Dev",
+            "allowedValues": [
+                "Dev",
+                "Tst",
+                "Acc",
+                "Prd"
+            ],
+            "metadata": {
+                "description": "ID of the Environment"
+            }
+        },
+        "description": {
+            "type": "string",
+            "metadata": {
+                "description": "Subscription of the Application"
+            }
+        },
+        "subnetIncrement": {
+            "type": "string",
+            "defaultValue": "01",
+            "metadata": {
+                "description": "Subnet Number to Add"
+            }
+        },
+        "subnetAddressPrefix": {
+            "type": "string",
+            "defaultValue": "10.232.82.0/28",
+            "metadata": {
+                "description": "Address space of the subnet to add"
+            }
+        },
+        "virtualNetworkIncrement": {
+            "type": "string",
+            "defaultValue": "01",
+            "metadata": {
+                "description": "vNet Number"
+            }
+        }
+    },
+    "variables": {
+        "subnetName": "[concat(parameters('location_id'),'-',parameters('subscription_id'),'-',parameters('environment_id'),'-Vnet-Snt-',parameters('description'),'-',parameters('subnetIncrement'))]",
+        "vnetName": "[concat(parameters('location_id'),'-',parameters('subscription_id'),'-',parameters('environment_id'),'-Vnet-',parameters('virtualNetworkIncrement'))]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2018-04-01",
+            "name": "[concat(variables('vnetName'), '/', variables('subnetName'))]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+              "addressPrefix": "[parameters('subnetAddressPrefix')]"
+            }
+          }
+    ],
+    "outputs": {
+        "locationID": {
+            "type": "string",
+            "value": "[concat(parameters('location_id'),'\t<= the location where the Azure Resources will be deployed')]"
+        },
+        "subscriptionID": {
+            "type": "string",
+            "value": "[concat(parameters('subscription_id'),'\t<= the subscription where the Azure Resources will be deployed')]"
+        },
+        "environmentID": {
+            "type": "string",
+            "value": "[concat(parameters('environment_id'),'\t<= the environment where the Azure Resources will be deployed')]"
+        },
+        "descriptionID": {
+            "type": "string",
+            "value": "[concat(parameters('description'),'\t<= the description of Azure Resources that will be deployed')]"
+        },
+        "subnetName": {
+            "type": "string",
+            "value": "[concat(variables('subnetName'),'\t<= the description of Azure Resources that will be deployed')]"
+        },
+        "vnetName": {
+            "type": "string",
+            "value": "[concat(variables('vnetName'),'\t<= the description of Azure Resources that will be deployed')]"
+        }
+    }
+}
