@@ -96,7 +96,7 @@
         {
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2018-02-01",
-            "name": "[concat(variables('vmNamePattern'),padLeft(copyIndex(1),2,'0'),'-nic-', padLeft(copyIndex(1),2,'0'))]",
+            "name": "[variables('nics')[copyIndex()].name]",
             "location": "[resourceGroup().location]",
             "copy": {
                 "name": "nicsCopy",
