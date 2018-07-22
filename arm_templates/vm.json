@@ -1,0 +1,149 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "type": "string",
+            "defaultValue": "WeEu",
+            "allowedValues": [
+                "WeEu",
+                "NoEu"
+            ],
+            "metadata": {
+                "description": "AHIT ID of the Azure Location"
+            }
+        },
+        "subscription": {
+            "type": "string",
+            "defaultValue": "S03",
+            "allowedValues": [
+                "S01",
+                "S02",
+                "S03",
+                "PLY"
+            ],
+            "metadata": {
+                "description": "AHIT ID of the Azure Subscription"
+            }
+        },
+        "environment": {
+            "type": "string",
+            "defaultValue": "Dev",
+            "allowedValues": [
+                "Dev",
+                "Tst",
+                "Acc",
+                "Prd"
+            ],
+            "metadata": {
+                "description": "AHIT ID of the Environment"
+            }
+        },
+        "description": {
+            "type": "string",
+            "defaultValue": "TEMP",
+            "metadata": {
+                "description": "AHIT Subscription of the Application"
+            }
+        },
+        "osType": {
+            "type": "string",
+            "defaultValue": "Linux",
+            "allowedValues": [
+                "Linux",
+                "Windows"
+            ],
+            "metadata": {
+                "description": "Type of the OS. Will also be used to construct the name of the VM(s)."
+            }
+        },
+        "numberOfInstances": {
+            "type": "int",
+            "defaultValue": 2,
+            "minValue": 2,
+            "maxValue": 5,
+            "metadata": {
+                "description": "Number of VMs to deploy, limit 5 since this sample is using a single storage account"
+            }
+        },
+        "virtualNetworkIncrement": {
+            "type": "string",
+            "defaultValue": "01",
+            "metadata": {
+                "description": "vNet Number"
+            }
+        }
+    },
+    "variables": {
+        "vmNamePattern": "[toLower(concat(parameters('location'),parameters('subscription'),substring(parameters('environment'),0,1),if(equals(parameters('osType'),'Windows'),'w','l'),parameters('description')))]",
+        "vmOSDiskNamePattern": "[concat(variables('vmNamePattern'),'-os-')]",
+        "vmDatadiskNamePattern": "[concat(variables('vmNamePattern'),'-data-')]",
+        "vnetName": "[concat(parameters('location'),'-',parameters('subscription'),'-',parameters('environment'),'-Vnet-',parameters('virtualNetworkIncrement'))]",
+        "vnetRgName": "[concat(parameters('location'),'-',parameters('subscription'),'-',parameters('environment'),'-Rsg-Ntwk-',parameters('virtualNetworkIncrement'))]",
+        "vnetRef": "[resourceId(variables('vnetRgName'), 'Microsoft.Network/virtualNetworks', variables('vnetName'))]",
+        "subnetRef": "[concat(variables('vnetRef'),'/subnets/',parameters('location'),'-',parameters('subscription'),'-',parameters('environment'),'-Vnet-Snt-',parameters('description'),'-01')]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2018-02-01",
+            "name": "[concat(variables('vmNamePattern'),padLeft(copyIndex(1),2,'0'),'-nic-', padLeft(copyIndex(1),2,'0'))]",
+            "location": "[resourceGroup().location]",
+            "copy": {
+                "name": "NICSLoop",
+                "count": "[parameters('numberOfInstances')]"
+            },
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "outputs": {
+        "locationID": {
+            "type": "string",
+            "value": "[concat(parameters('location'),'\t<= the location where the Azure Resources will be deployed')]"
+        },
+        "subscriptionID": {
+            "type": "string",
+            "value": "[concat(parameters('subscription'),'\t<= the subscription where the Azure Resources will be deployed')]"
+        },
+        "environmentID": {
+            "type": "string",
+            "value": "[concat(parameters('environment'),'\t<= the environment where the Azure Resources will be deployed')]"
+        },
+        "descriptionID": {
+            "type": "string",
+            "value": "[concat(parameters('description'),'\t<= the description of Azure Resources that will be deployed')]"
+        },
+        "vmNamePattern": {
+            "type": "string",
+            "value": "[concat(variables('vmNamePattern'),'\t<= the description of Azure Resources that will be deployed')]"
+        },
+        "vmOSDiskNamePattern": {
+            "type": "string",
+            "value": "[concat(variables('vmOSDiskNamePattern'),'\t<= the description of Azure Resources that will be deployed')]"
+        },
+        "vmDatadiskNamePattern": {
+            "type": "string",
+            "value": "[concat(variables('vmDatadiskNamePattern'),'\t<= the description of Azure Resources that will be deployed')]"
+        },
+        "vnetRef": {
+            "type": "string",
+            "value": "[concat(variables('vnetRef'),'\t<= the description of Azure Resources that will be deployed')]"
+        },
+        "subnetRef": {
+            "type": "string",
+            "value": "[concat(variables('subnetRef'),'\t<= the description of Azure Resources that will be deployed')]"
+        }
+    }
+}
