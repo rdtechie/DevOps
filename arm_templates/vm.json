@@ -99,7 +99,7 @@
             "name": "[variables('nics')[copyIndex()].name]",
             "location": "[resourceGroup().location]",
             "copy": {
-                "name": "nicsCopy",
+                "name": "nics",
                 "count": "[length(variables('nics'))]"
             },
             "properties": {
