@@ -81,17 +81,26 @@
         "vnetName": "[concat(parameters('location_id'),'-',parameters('subscription_id'),'-',parameters('environment_id'),'-Vnet-',parameters('virtualNetworkIncrement'))]",
         "vnetRgName": "[concat(parameters('location_id'),'-',parameters('subscription_id'),'-',parameters('environment_id'),'-Rsg-Ntwk-',parameters('virtualNetworkIncrement'))]",
         "vnetRef": "[resourceId(variables('vnetRgName'), 'Microsoft.Network/virtualNetworks', variables('vnetName'))]",
-        "subnetRef": "[concat(variables('vnetRef'),'/subnets/',parameters('location_id'),'-',parameters('subscription_id'),'-',parameters('environment_id'),'-Vnet-Snt-',parameters('description'),'-01')]"
+        "subnetRef": "[concat(variables('vnetRef'),'/subnets/',parameters('location_id'),'-',parameters('subscription_id'),'-',parameters('environment_id'),'-Vnet-Snt-',parameters('description'),'-01')]",
+        "copy": [
+            {
+                "name": "nics",
+                "count": "[length(parameters('numberOfInstances'))]",
+                "input": {
+                    "name": "[concat(variables('vmNamePattern'),padLeft(copyIndex(1),2,'0'),'-nic-', padLeft(copyIndex(1),2,'0'))]"
+                }
+            }
+        ]
     },
     "resources": [
         {
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2018-02-01",
-            "name": "[concat(variables('vmNamePattern'),padLeft(copyIndex(1),2,'0'),'-nic-', padLeft(copyIndex(1),2,'0'))]",
+            "name": "[variables('nics')[copyIndex()].name]",
             "location": "[resourceGroup().location]",
             "copy": {
-                "name": "NICSLoop",
-                "count": "[parameters('numberOfInstances')]"
+                "name": "nicsCopy",
+                "count": "[length(variables('nics'))]"
             },
             "properties": {
                 "ipConfigurations": [
@@ -110,40 +119,8 @@
     ],
     "outputs": {
         "locationID": {
-            "type": "string",
-            "value": "[concat(parameters('location_id'),'\t<= the location where the Azure Resources will be deployed')]"
-        },
-        "subscriptionID": {
-            "type": "string",
-            "value": "[concat(parameters('subscription_id'),'\t<= the subscription where the Azure Resources will be deployed')]"
-        },
-        "environmentID": {
-            "type": "string",
-            "value": "[concat(parameters('environment_id'),'\t<= the environment where the Azure Resources will be deployed')]"
-        },
-        "descriptionID": {
-            "type": "string",
-            "value": "[concat(parameters('description'),'\t<= the description of Azure Resources that will be deployed')]"
-        },
-        "vmNamePattern": {
-            "type": "string",
-            "value": "[concat(variables('vmNamePattern'),'\t<= the description of Azure Resources that will be deployed')]"
-        },
-        "vmOSDiskNamePattern": {
-            "type": "string",
-            "value": "[concat(variables('vmOSDiskNamePattern'),'\t<= the description of Azure Resources that will be deployed')]"
-        },
-        "vmDatadiskNamePattern": {
-            "type": "string",
-            "value": "[concat(variables('vmDatadiskNamePattern'),'\t<= the description of Azure Resources that will be deployed')]"
-        },
-        "vnetRef": {
-            "type": "string",
-            "value": "[concat(variables('vnetRef'),'\t<= the description of Azure Resources that will be deployed')]"
-        },
-        "subnetRef": {
-            "type": "string",
-            "value": "[concat(variables('subnetRef'),'\t<= the description of Azure Resources that will be deployed')]"
+            "type": "object",
+            "value": "[reference(variables('nics')).ipConfigurations[0].properties.privateIPAddress]"
         }
     }
 }
